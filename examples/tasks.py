@@ -21,10 +21,10 @@ from hpOneView.exceptions import HPOneViewException
 from config_loader import try_load_from_file
 
 config = {
-    "ip": "172.16.102.59",
+    "ip": "10.50.9.90",
     "credentials": {
-        "userName": "administrator",
-        "password": ""
+        "userName": "Administrator",
+        "password": "admin123"
     }
 }
 
