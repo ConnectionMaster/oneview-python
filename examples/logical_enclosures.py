@@ -16,12 +16,13 @@
 ###
 
 from pprint import pprint
-
+import time
 from hpOneView.oneview_client import OneViewClient
 from config_loader import try_load_from_file
 
 config = {
-    "ip": "10.50.9.90",
+    "api_version": 1600,
+    "ip": "10.50.9.28",
     "credentials": {
         "userName": "Administrator",
         "password": "admin123"
@@ -38,12 +39,13 @@ logical_enclosures = oneview_client.logical_enclosures
 
 # The valid enclosure URIs need to be inserted sorted by URI
 # The number of enclosure URIs must be equal to the enclosure count in the enclosure group
+
 options = dict(
-    enclosureUris=[],
-    enclosureGroupUri="",
+    enclosureUris=["/rest/enclosures/0000000000A66101","/rest/enclosures/0000000000A66102","/rest/enclosures/0000000000A66103"],
+    enclosureGroupUri="EG",
     forceInstallFirmware=False,
-    name="LogicalEnclosure2"
-)
+    name="LE"
+    )
 
 # Get all logical enclosures
 print("Get all logical enclosures")
@@ -56,7 +58,7 @@ logical_enclosure_all = logical_enclosures.get_all()
 if logical_enclosure_all:
     logical_enclosure = logical_enclosure_all[0]
     print("Found logical enclosure '{}' at\n   uri: '{}'".format(
-        logical_enclosure['name'], logical_enclosure['uri']))
+      logical_enclosure['name'], logical_enclosure['uri']))
 
     # Get logical enclosure by uri
     logical_enclosure = logical_enclosures.get_by_uri(logical_enclosure['uri'])
@@ -107,6 +109,7 @@ print("   Done. uri: '%s', 'name': '%s'" %
       (logical_enclosure.data['uri'], logical_enclosure.data['name']))
 
 print("Reset name")
+resource = logical_enclosure.data.copy()
 resource["name"] = previous_name
 logical_enclosure.update(resource)
 print("   Done. uri: '%s', 'name': '%s'" %
@@ -115,30 +118,20 @@ print("   Done. uri: '%s', 'name': '%s'" %
 
 # Update configuration
 print("Reapply the appliance's configuration to the logical enclosure")
-logical_enclosure.update_configuration()
+#logical_enclosure.update_configuration()
 print("   Done.")
 
-# Update and get script
-print("Update script")
-script = "# TEST COMMAND"
-logical_enclosure_updated = logical_enclosure.update_script(
-    logical_enclosure.data['uri'], script)
-print("   updated script: '{}'".format(
-    logical_enclosure.get_script()))
-
-# Create support dumps
-print("Generate support dump")
 info = {
     "errorCode": "MyDump16",
     "encrypt": True,
     "excludeApplianceDump": False
 }
-support_dump = logical_enclosure.generate_support_dump(info)
+#support_dump = logical_enclosure.generate_support_dump(info)
 print("   Done")
 
 # update from group
 print("Update from group")
-logical_enclosure_updated = logical_enclosure.update_from_group()
+#logical_enclosure_updated = logical_enclosure.update_from_group()
 print("   Done")
 
 if oneview_client.api_version >= 300:
@@ -162,5 +155,5 @@ if oneview_client.api_version >= 300:
 
 # Delete the logical enclosure created
 # This method is only available on HPE Synergy.
-logical_enclosure.delete()
+#logical_enclosure.delete()
 print("Delete logical enclosure")
