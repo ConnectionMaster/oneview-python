@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 ###
-# (C) Copyright [2020] Hewlett Packard Enterprise Development LP
+# (C) Copyright [2021] Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -266,6 +266,33 @@ class Resource(object):
             new_resource = None
         return new_resource
 
+    # Sometimes get_all() with filters are not returning correct values, so added this method to overcome that issue
+    def get_by_field(self, field, value):
+        """Retrieves a resource by its field.
+
+        Args:
+            field: Resource field name.
+            value: Resource field value.
+
+        Returns:
+            Resource object or None if resource does not exist.
+        """
+        if not field:
+            logger.exception(RESOURCE_CLIENT_INVALID_FIELD)
+            raise ValueError(RESOURCE_CLIENT_INVALID_FIELD)
+
+        results = self.get_all()
+
+        # This filter only work for the first level
+        result = [item for item in results if str(item.get(field, "")).lower() == value.lower()]
+
+        if result:
+            data = result[0]
+            new_resource = self.new(self._connection, data)
+        else:
+            new_resource = None
+        return new_resource
+
     def get_by_uri(self, uri):
         """Retrieves a resource by its URI
 
@@ -341,7 +368,9 @@ class ResourceHelper(object):
         self._connection = connection
         self._task_monitor = task_monitor
 
-    def get_all(self, start=0, count=-1, filter='', query='', sort='', view='', fields='', uri=None, scope_uris='', custom_headers=None):
+    def get_all(self, start=0, count=-1, filter='', query='', sort='', view='', fields='', uri=None, scope_uris='', custom_headers=None,
+                name_prefix='', category=[], childLimit=0, topCount=0,):
+
         """Gets all items according with the given arguments.
 
         Args:
@@ -381,7 +410,11 @@ class ResourceHelper(object):
                                    sort=sort,
                                    view=view,
                                    fields=fields,
-                                   scope_uris=scope_uris)
+                                   scope_uris=scope_uris,
+                                   name_prefix=name_prefix,
+                                   category=category,
+                                   childLimit=childLimit,
+                                   topCount=topCount)
 
         logger.debug('Getting all resources with uri: {0}'.format(uri))
 
@@ -547,7 +580,9 @@ class ResourceHelper(object):
 
         return self.get_members(response)
 
-    def build_query_uri(self, uri=None, start=0, count=-1, filter='', query='', sort='', view='', fields='', scope_uris=''):
+    def build_query_uri(self, uri=None, start=0, count=-1, filter='', query='', sort='', view='', fields='', scope_uris='',
+                        name_prefix='', category=[], childLimit=0, topCount=0):
+
         """Builds the URI from given parameters.
 
         More than one request can be send to get the items, regardless the query parameter 'count', because the actual
@@ -579,6 +614,7 @@ class ResourceHelper(object):
             uri: A specific URI (optional)
             scope_uris: An expression to restrict the resources returned according to the scopes to
                 which they are assigned.
+            name_prefix: Filters the resource returned by the given prefix.
 
         Returns:
             uri: The complete uri
@@ -601,14 +637,28 @@ class ResourceHelper(object):
         if scope_uris:
             scope_uris = "&scopeUris=" + quote(scope_uris)
 
+        if name_prefix:
+            name_prefix = "&namePrefix=" + quote(name_prefix)
+
+        categories = ''
+        if category:
+            for cat in category:
+                categories = categories + "&category=" + quote(cat)
+
+        if childLimit:
+            childLimit = "&childLimit=" + str(childLimit)
+
+        if topCount:
+            topCount = "&topCount=" + str(topCount)
+
         path = uri if uri else self._base_uri
 
         self.validate_resource_uri(path)
 
         symbol = '?' if '?' not in path else '&'
 
-        uri = "{0}{1}start={2}&count={3}{4}{5}{6}{7}{8}{9}".format(path, symbol, start, count, filter, query, sort,
-                                                                   view, fields, scope_uris)
+        uri = "{0}{1}start={2}&count={3}{4}{5}{6}{7}{8}{9}{10}{11}".format(path, symbol, start, count, filter, query, sort,
+                                                                           view, fields, scope_uris, name_prefix, categories)
         return uri
 
     def build_uri_with_query_string(self, kwargs, sufix_path='', uri=None):

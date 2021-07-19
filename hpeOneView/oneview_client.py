@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 ###
-# (C) Copyright [2020] Hewlett Packard Enterprise Development LP
+# (C) Copyright [2021] Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -105,11 +105,16 @@ from hpeOneView.resources.settings.appliance_device_snmp_v1_trap_destinations im
 from hpeOneView.resources.settings.appliance_device_snmp_v3_trap_destinations import ApplianceDeviceSNMPv3TrapDestinations
 from hpeOneView.resources.settings.appliance_device_snmp_v3_users import ApplianceDeviceSNMPv3Users
 from hpeOneView.resources.settings.appliance_node_information import ApplianceNodeInformation
+from hpeOneView.resources.settings.appliance_health_status import ApplianceHealthStatus
+from hpeOneView.resources.settings.appliance_proxy_configuration import ApplianceProxyConfiguration
+from hpeOneView.resources.settings.ha_nodes import HANodes
 from hpeOneView.resources.settings.appliance_time_and_locale_configuration import ApplianceTimeAndLocaleConfiguration
 from hpeOneView.resources.settings.versions import Versions
 from hpeOneView.resources.hypervisors.hypervisor_managers import HypervisorManagers
 from hpeOneView.resources.security.certificates_server import CertificatesServer
 from hpeOneView.resources.hypervisors.hypervisor_cluster_profiles import HypervisorClusterProfiles
+from hpeOneView.resources.settings.appliance_configuration_timeconfig import ApplianceConfigurationTimeconfig
+from hpeOneView.resources.settings.appliance_ssh_access import ApplianceSshAccess
 
 ONEVIEW_CLIENT_INVALID_PROXY = 'Invalid Proxy format'
 ONEVIEW_CLIENT_INVALID_I3S_IP = 'Image streamer ip address is missing'
@@ -199,12 +204,17 @@ class OneViewClient(object):
         self.__appliance_device_snmp_v3_users = None
         self.__appliance_time_and_locale_configuration = None
         self.__appliance_node_information = None
+        self.__appliance_health_status = None
+        self.__appliance_proxy_configuration = None
         self.__versions = None
         self.__backups = None
         self.__login_details = None
         self.__licenses = None
         self.__hypervisor_managers = None
         self.__certificates_server = None
+        self.__appliance_configuration_timeconfig = None
+        self.__appliance_ssh_access = None
+        self.__ha_nodes = None
 
     @classmethod
     def from_json_file(cls, file_name):
@@ -495,9 +505,7 @@ class OneViewClient(object):
         Returns:
             IdPoolsIpv4Ranges:
         """
-        if not self.__id_pools_ipv4_ranges:
-            self.__id_pools_ipv4_ranges = IdPoolsIpv4Ranges(self.__connection)
-        return self.__id_pools_ipv4_ranges
+        return IdPoolsIpv4Ranges(self.__connection)
 
     @property
     def id_pools_ipv4_subnets(self):
@@ -507,9 +515,7 @@ class OneViewClient(object):
         Returns:
             IdPoolsIpv4Subnets:
         """
-        if not self.__id_pools_ipv4_subnets:
-            self.__id_pools_ipv4_subnets = IdPoolsIpv4Subnets(self.__connection)
-        return self.__id_pools_ipv4_subnets
+        return IdPoolsIpv4Subnets(self.__connection)
 
     @property
     def id_pools(self):
@@ -519,9 +525,7 @@ class OneViewClient(object):
         Returns:
             IdPools:
         """
-        if not self.__id_pools:
-            self.__id_pools = IdPools(self.__connection)
-        return self.__id_pools
+        return IdPools(self.__connection)
 
     @property
     def switches(self):
@@ -866,9 +870,7 @@ class OneViewClient(object):
         Returns:
             FirmwareBundles:
         """
-        if not self.__firmware_bundles:
-            self.__firmware_bundles = FirmwareBundles(self.__connection)
-        return self.__firmware_bundles
+        return FirmwareBundles(self.__connection)
 
     @property
     def uplink_sets(self):
@@ -976,9 +978,7 @@ class OneViewClient(object):
         Returns:
             Labels:
         """
-        if not self.__labels:
-            self.__labels = Labels(self.__connection)
-        return self.__labels
+        return Labels(self.__connection)
 
     @property
     def index_resources(self):
@@ -1056,9 +1056,7 @@ class OneViewClient(object):
         Returns:
             Users:
         """
-        if not self.__users:
-            self.__users = Users(self.__connection)
-        return self.__users
+        return Users(self.__connection)
 
     @property
     def appliance_device_read_community(self):
@@ -1090,9 +1088,7 @@ class OneViewClient(object):
         Returns:
             ApplianceDeviceSNMPv3TrapDestinations:
         """
-        if not self.__appliance_device_snmp_v3_trap_destinations:
-            self.__appliance_device_snmp_v3_trap_destinations = ApplianceDeviceSNMPv3TrapDestinations(self.__connection)
-        return self.__appliance_device_snmp_v3_trap_destinations
+        return ApplianceDeviceSNMPv3TrapDestinations(self.__connection)
 
     @property
     def appliance_device_snmp_v3_users(self):
@@ -1102,9 +1098,7 @@ class OneViewClient(object):
         Returns:
             ApplianceDeviceSNMPv3Users:
         """
-        if not self.__appliance_device_snmp_v3_users:
-            self.__appliance_device_snmp_v3_users = ApplianceDeviceSNMPv3Users(self.__connection)
-        return self.__appliance_device_snmp_v3_users
+        return ApplianceDeviceSNMPv3Users(self.__connection)
 
     @property
     def appliance_node_information(self):
@@ -1114,9 +1108,37 @@ class OneViewClient(object):
         Returns:
             ApplianceNodeInformation:
         """
-        if not self.__appliance_node_information:
-            self.__appliance_node_information = ApplianceNodeInformation(self.__connection)
-        return self.__appliance_node_information
+        return ApplianceNodeInformation(self.__connection)
+
+    @property
+    def appliance_health_status(self):
+        """
+        Gets the ApplianceHealthStatus API client.
+
+        Returns:
+            ApplianceHealthStatus:
+        """
+        return ApplianceHealthStatus(self.__connection)
+
+    @property
+    def appliance_proxy_configuration(self):
+        """
+        Gets the ApplianceProxyConfiguration API client.
+
+        Returns:
+            ApplianceProxyConfiguration:
+        """
+        return ApplianceProxyConfiguration(self.__connection)
+
+    @property
+    def ha_nodes(self):
+        """
+        Gets the HANodes API client.
+
+        Returns:
+            HANodes:
+        """
+        return HANodes(self.__connection)
 
     @property
     def appliance_time_and_locale_configuration(self):
@@ -1126,9 +1148,7 @@ class OneViewClient(object):
         Returns:
             ApplianceTimeAndLocaleConfiguration:
         """
-        if not self.__appliance_time_and_locale_configuration:
-            self.__appliance_time_and_locale_configuration = ApplianceTimeAndLocaleConfiguration(self.__connection)
-        return self.__appliance_time_and_locale_configuration
+        return ApplianceTimeAndLocaleConfiguration(self.__connection)
 
     @property
     def versions(self):
@@ -1206,3 +1226,23 @@ class OneViewClient(object):
             Hypervisor Cluster Profiles:
         """
         return HypervisorClusterProfiles(self.__connection)
+
+    @property
+    def appliance_configuration_timeconfig(self):
+        """
+        Gets the ApplianceConfigurationTimeconfig API client.
+
+        Returns:
+            ApplianceConfigurationTimeconfig:
+        """
+        return ApplianceConfigurationTimeconfig(self.__connection)
+
+    @property
+    def appliance_ssh_access(self):
+        """
+        Gets the ApplianceSshAccess API client.
+
+        Returns:
+            ApplianceSshAccess:
+        """
+        return ApplianceSshAccess(self.__connection)

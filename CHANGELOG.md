@@ -1,7 +1,211 @@
+# 6.3.0(unreleased)
+#### Notes
+Extends support of the SDK to OneView REST API version 3200 (OneView v6.30)
 
-# 5.5.1
+##### Features supported with the current release
+- Appliance Proxy Configuration
+- Firmware Bundles
+
+# 6.2.0
+#### Notes
+Extends support of the SDK to OneView REST API version 3000 (OneView v6.20)
+
+#### Bug fixes & Enhancements
+- [#157] (https://github.com/HewlettPackard/oneview-python/issues/157) Add appliance ha-nodes endpoint to sdk
+
+##### Features supported with the current release
+- Appliance Configuration Timeconfig
+- Appliance Health Status
+- Appliance Node Information
+- Appliance SNMPv1 Trap Destinations
+- Appliance SNMPv3 Trap Destinations
+- Appliance SNMPv3 Users
+- Appliance SSH Access
+- Appliance Time and Locale Configuration
+- Connection Templates
+- Enclosures
+- Enclosure Groups
+- Ethernet network
+- FC network
+- FCOE network
+- Firmware Drivers
+- HA Nodes
+- Hypervisor Cluster Profiles
+- Hypervisor Managers
+- ID Pools
+- ID Pool IPv4 Range
+- ID Pool IPv4 Subnets
+- Index Resources
+- Interconnects
+- Interconnect Types
+- Labels 
+- Logical Enclosures
+- Logical Interconnects
+- Logical Interconnect Group
+- Network set
+- Restores
+- Scopes
+- Server Hardware
+- Server Hardware Types
+- Server Profiles
+- Server Profile Templates
+- Storage Pools
+- Storage Systems
+- Storage Templates
+- Storage Volume Attachments
+- Storage Volume
+- Tasks
+- Uplink set
+- Users
+- Version
+
+# 6.1.0
+#### Notes
+Extends support of the SDK to OneView REST API version 2800 (OneView v6.10) and ImageStreamer REST API version 2020 (I3S v6.10).
+
+#### Bug fixes & Enhancements
+- [#139] (https://github.com/HewlettPackard/oneview-python/issues/139) Hardware needs attachment to existing SCOPE and PROFILE
+- [#140] (https://github.com/HewlettPackard/oneview-python/issues/140) Detach a profile from the hardware resource
+- [#145] (https://github.com/HewlettPackard/oneview-python/issues/145) get_by_uri() method in scope is not listing few category resources like drive-enclosures & sas-interconnects
+
+#### Features supported
+
+- Appliance Configuration Timeconfig
+- Appliance SNMPv1 Trap Destinations
+- Appliance SNMPv3 Trap Destinations
+- Appliance SNMPv3 Users
+- Appliance SSH Access
+- Appliance Time and Locale Configuration
+- Artifact Bundles
+- Certificates Server
+- Connection Templates
+- Deployment Plans
+- Deployment Groups
+- Enclosures
+- Enclosure Groups
+- Ethernet network
+- FC network
+- FCOE network
+- Firmware Drivers
+- Golden Images
+- Hypervisor Cluster Profiles
+- Hypervisor Managers
+- ID Pools
+- ID Pool IPv4 Range
+- ID Pool IPv4 Subnets
+- Index Resources
+- Interconnects
+- Interconnect Types
+- Lables
+- Logical Enclosures
+- Logical Interconnects
+- Logical Interconnect Group
+- Network set
+- OS Build Plans
+- OS Deployment Plans
+- OS Volumes
+- Restores
+- Scopes
+- Server Hardware
+- Server Hardware Types
+- Server Profiles
+- Server Profile Templates
+- Storage Pools
+- Storage Systems
+- Storage Templates
+- Storage Volume Attachments
+- Storage Volume 
+- Tasks
+- Uplink set
+- Users
+- Version
+
+# 6.0.0
+#### Notes
+Extends support of the SDK to OneView REST API version 2600 (OneView v6.00) and ImageStreamer REST API version 2010 (I3S v6.00).
+
+#### Features supported
+- Appliance Configuration Timeconfig
+- Appliance SNMPv1 Trap Destinations
+- Appliance SNMPv3 Trap Destinations
+- Appliance SNMPv3 Users
+- Appliance SSH Access
+- Appliance Time and Locale Configuration
+- Artifact Bundles
+- Certificates Server
+- Connection Templates
+- Deployment Plans
+- Enclosures
+- Enclosure Groups
+- Ethernet network
+- FC network
+- FCOE network
+- Firmware Drivers
+- Hypervisor Cluster Profiles
+- Hypervisor Managers
+- ID Pools
+- ID Pool IPv4 Range
+- ID Pool IPv4 Subnets
+- Interconnects
+- Interconnect Types
+- Logical Enclosures
+- Logical Interconnects
+- Logical Interconnect Group
+- Network set
+- OS Deployment Plans
+- Restores
+- Scopes
+- Server Hardware
+- Server Hardware Types
+- Server Profiles
+- Server Profile Templates
+- Storage Pools
+- Storage Systems
+- Storage Templates
+- Storage Volume Attachments
+- Storage Volume 
+- Tasks
+- Uplink set
+
+# 5.6.0
+#### Notes
+Extends support of the SDK to OneView REST API version 2400 (OneView v5.60).
+
 #### Bug fixes & Enhancements
 - [#110] (https://github.com/HewlettPackard/oneview-python/issues/110) certificate_authority.get() does not return certificate string
+
+#### Features supported with the current release
+- Appliance SNMPv1 Trap Destinations
+- Connection Templates
+- Certificates Server
+- Enclosures
+- Enclosure Groups
+- Ethernet network
+- FC network
+- FCOE network
+- Firmware Drivers
+- Hypervisor Cluster Profiles
+- Hypervisor Managers
+- Interconnects
+- Interconnect Types
+- Logical Enclosures
+- Logical Interconnects
+- Logical Interconnect Group
+- Network set
+- OS Deployment Plans
+- Restores
+- Scopes
+- Server Hardware
+- Server Hardware Types
+- Server Profiles
+- Server Profile Templates
+- Storage Pools
+- Storage Systems
+- Storage Templates
+- Storage Volume Attachments
+- Storage Volume 
+- Tasks
+- Uplink set
 
 # 5.5.0
 #### Notes

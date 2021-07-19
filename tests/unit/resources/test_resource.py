@@ -960,6 +960,11 @@ class ResourceTest(BaseTest):
         self.assertIsNone(response)
         mock_get_by.assert_called_once_with("name", "Resource Name,")
 
+    @mock.patch.object(Resource, 'get_all')
+    def test_get_by_field(self, mock_get_all):
+        self.resource_client.get_by_field('name', 'MyFibreNetwork')
+        mock_get_all.assert_called_once_with()
+
     @mock.patch.object(connection, "get")
     def test_get_by_uri(self, mock_get):
         self.resource_client.get_by_uri("/rest/testuri")

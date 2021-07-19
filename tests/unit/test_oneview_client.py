@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 ###
-# (C) Copyright [2020] Hewlett Packard Enterprise Development LP
+# (C) Copyright [2021] Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ from hpeOneView.resources.fc_sans.managed_sans import ManagedSANs
 from hpeOneView.resources.fc_sans.san_managers import SanManagers
 from hpeOneView.resources.fc_sans.endpoints import Endpoints
 from hpeOneView.resources.settings.firmware_drivers import FirmwareDrivers
+from hpeOneView.resources.settings.firmware_bundles import FirmwareBundles
 from hpeOneView.resources.settings.backups import Backups
 from hpeOneView.resources.settings.restores import Restores
 from hpeOneView.resources.settings.scopes import Scopes
@@ -76,6 +77,8 @@ from hpeOneView.resources.settings.appliance_device_snmp_v1_trap_destinations im
 from hpeOneView.resources.settings.appliance_device_snmp_v3_trap_destinations import ApplianceDeviceSNMPv3TrapDestinations
 from hpeOneView.resources.settings.appliance_device_snmp_v3_users import ApplianceDeviceSNMPv3Users
 from hpeOneView.resources.settings.appliance_node_information import ApplianceNodeInformation
+from hpeOneView.resources.settings.appliance_proxy_configuration import ApplianceProxyConfiguration
+from hpeOneView.resources.settings.appliance_health_status import ApplianceHealthStatus
 from hpeOneView.resources.settings.appliance_time_and_locale_configuration import ApplianceTimeAndLocaleConfiguration
 from hpeOneView.resources.settings.versions import Versions
 from tests.test_utils import mock_builtin
@@ -83,6 +86,8 @@ from hpeOneView.resources.settings.licenses import Licenses
 from hpeOneView.resources.hypervisors.hypervisor_managers import HypervisorManagers
 from hpeOneView.resources.security.certificates_server import CertificatesServer
 from hpeOneView.resources.hypervisors.hypervisor_cluster_profiles import HypervisorClusterProfiles
+from hpeOneView.resources.settings.appliance_configuration_timeconfig import ApplianceConfigurationTimeconfig
+from hpeOneView.resources.settings.appliance_ssh_access import ApplianceSshAccess
 
 OS_ENVIRON_CONFIG_MINIMAL = {
     'ONEVIEWSDK_IP': '172.16.100.199',
@@ -543,21 +548,21 @@ class OneViewClientTest(unittest.TestCase):
 
     def test_id_pools_ipv4_ranges_lazy_loading(self):
         id_pools_ipv4_ranges = self._oneview.id_pools_ipv4_ranges
-        self.assertEqual(id_pools_ipv4_ranges, self._oneview.id_pools_ipv4_ranges)
+        self.assertNotEqual(id_pools_ipv4_ranges, self._oneview.id_pools_ipv4_ranges)
 
     def test_id_pools_ipv4_subnets_has_right_type(self):
         self.assertIsInstance(self._oneview.id_pools_ipv4_subnets, IdPoolsIpv4Subnets)
 
     def test_id_pools_ipv4_subnets_lazy_loading(self):
         id_pools_ipv4_subnets = self._oneview.id_pools_ipv4_subnets
-        self.assertEqual(id_pools_ipv4_subnets, self._oneview.id_pools_ipv4_subnets)
+        self.assertNotEqual(id_pools_ipv4_subnets, self._oneview.id_pools_ipv4_subnets)
 
     def test_id_pools_has_right_type(self):
         self.assertIsInstance(self._oneview.id_pools, IdPools)
 
-    def test_id_pools_lazy_loading(self):
+    def test_id_pools_client(self):
         id_pools = self._oneview.id_pools
-        self.assertEqual(id_pools, self._oneview.id_pools)
+        self.assertNotEqual(id_pools, self._oneview.id_pools)
 
     def test_logical_enclosures(self):
         logical_enclosures = self._oneview.logical_enclosures
@@ -589,9 +594,12 @@ class OneViewClientTest(unittest.TestCase):
         firmware_drivers = self._oneview.firmware_drivers
         self.assertNotEqual(firmware_drivers, self._oneview.firmware_drivers)
 
-    def test_lazy_loading_firmware_bundles(self):
+    def test_firmware_bundles_has_right_type(self):
+        self.assertIsInstance(self._oneview.firmware_bundles, FirmwareBundles)
+
+    def test_firmware_bundles_client(self):
         firmware_bundles = self._oneview.firmware_bundles
-        self.assertEqual(firmware_bundles, self._oneview.firmware_bundles)
+        self.assertNotEqual(firmware_bundles, self._oneview.firmware_bundles)
 
     def test_migratable_vc_domains_has_right_type(self):
         self.assertIsInstance(self._oneview.migratable_vc_domains, MigratableVcDomains)
@@ -846,12 +854,18 @@ class OneViewClientTest(unittest.TestCase):
         index_resources = self._oneview.index_resources
         self.assertNotEqual(index_resources, self._oneview.index_resources)
 
-    def test_labels_has_right_type(self):
+    """def test_labels_has_right_type(self):
         self.assertIsInstance(self._oneview.labels, Labels)
 
     def test_lazy_loading_labels(self):
         labels = self._oneview.labels
-        self.assertEqual(labels, self._oneview.labels)
+        self.assertEqual(labels, self._oneview.labels)"""
+
+    def test_labels_has_right_type(self):
+        self.assertIsInstance(self._oneview.labels, Labels)
+
+    def test_labels_has_value(self):
+        self.assertIsNotNone(self._oneview.labels)
 
     def test_alerts_has_right_type(self):
         self.assertIsInstance(self._oneview.alerts, Alerts)
@@ -891,9 +905,9 @@ class OneViewClientTest(unittest.TestCase):
     def test_users_has_right_type(self):
         self.assertIsInstance(self._oneview.users, Users)
 
-    def test_lazy_loading_users(self):
+    def test_users_client(self):
         user = self._oneview.users
-        self.assertEqual(user, self._oneview.users)
+        self.assertNotEqual(user, self._oneview.users)
 
     def test_appliance_device_read_community_has_right_type(self):
         self.assertIsInstance(self._oneview.appliance_device_read_community,
@@ -915,33 +929,39 @@ class OneViewClientTest(unittest.TestCase):
         self.assertIsInstance(self._oneview.appliance_device_snmp_v3_trap_destinations,
                               ApplianceDeviceSNMPv3TrapDestinations)
 
-    def test_lazy_loading_appliance_device_device_snmp_v3_trap_destinations(self):
+    def test_appliance_device_device_snmp_v3_trap_destinations_client(self):
         appliance_device_snmp_v3_trap_destinations = self._oneview.appliance_device_snmp_v3_trap_destinations
-        self.assertEqual(appliance_device_snmp_v3_trap_destinations, self._oneview.appliance_device_snmp_v3_trap_destinations)
+        self.assertNotEqual(appliance_device_snmp_v3_trap_destinations, self._oneview.appliance_device_snmp_v3_trap_destinations)
 
     def test_appliance_device_device_snmp_v3_users_has_right_type(self):
         self.assertIsInstance(self._oneview.appliance_device_snmp_v3_users,
                               ApplianceDeviceSNMPv3Users)
 
-    def test_lazy_loading_appliance_device_device_snmp_v3_users(self):
+    def test_appliance_device_device_snmp_v3_users(self):
         appliance_device_snmp_v3_users = self._oneview.appliance_device_snmp_v3_users
-        self.assertEqual(appliance_device_snmp_v3_users, self._oneview.appliance_device_snmp_v3_users)
+        self.assertNotEqual(appliance_device_snmp_v3_users, self._oneview.appliance_device_snmp_v3_users)
 
     def test_appliance_node_information_has_right_type(self):
-        self.assertIsInstance(self._oneview.appliance_node_information,
-                              ApplianceNodeInformation)
+        self.assertIsInstance(self._oneview.appliance_node_information, ApplianceNodeInformation)
 
-    def test_lazy_loading_appliance_node_information(self):
+    def test_appliance_node_information(self):
         appliance_node_information = self._oneview.appliance_node_information
-        self.assertEqual(appliance_node_information, self._oneview.appliance_node_information)
+        self.assertNotEqual(appliance_node_information, self._oneview.appliance_node_information)
+
+    def test_appliance_health_status_has_right_type(self):
+        self.assertIsInstance(self._oneview.appliance_health_status, ApplianceHealthStatus)
+
+    def test_appliance_health_status(self):
+        appliance_health_status = self._oneview.appliance_health_status
+        self.assertNotEqual(appliance_health_status, self._oneview.appliance_health_status)
 
     def test_appliance_time_and_locale_configuration_has_right_type(self):
         self.assertIsInstance(self._oneview.appliance_time_and_locale_configuration,
                               ApplianceTimeAndLocaleConfiguration)
 
-    def test_lazy_loading_appliance_time_and_locale_configuration(self):
+    def test_appliance_time_and_locale_configuration_client(self):
         appliance_time_and_locale_configuration = self._oneview.appliance_time_and_locale_configuration
-        self.assertEqual(appliance_time_and_locale_configuration, self._oneview.appliance_time_and_locale_configuration)
+        self.assertNotEqual(appliance_time_and_locale_configuration, self._oneview.appliance_time_and_locale_configuration)
 
     def test_should_get_appliance_current_version_and_minimum_version(self):
         self.assertIsInstance(self._oneview.versions,
@@ -971,3 +991,24 @@ class OneViewClientTest(unittest.TestCase):
     def test_hypervisor_cluster_profiles_client(self):
         HypervisorClusterProfiles = self._oneview.hypervisor_cluster_profiles
         self.assertNotEqual(HypervisorClusterProfiles, self._oneview.hypervisor_cluster_profiles)
+
+    def test_appliance_configuration_timeconfig_has_right_type(self):
+        self.assertIsInstance(self._oneview.appliance_configuration_timeconfig, ApplianceConfigurationTimeconfig)
+
+    def test_appliance_configuration_timeconfig_client(self):
+        ApplianceConfigurationTimeconfig = self._oneview.appliance_configuration_timeconfig
+        self.assertNotEqual(ApplianceConfigurationTimeconfig, self._oneview.appliance_configuration_timeconfig)
+
+    def test_appliance_ssh_access_has_right_type(self):
+        self.assertIsInstance(self._oneview.appliance_ssh_access, ApplianceSshAccess)
+
+    def test_appliance_ssh_access_client(self):
+        ApplianceSshAccess = self._oneview.appliance_ssh_access
+        self.assertNotEqual(ApplianceSshAccess, self._oneview.appliance_ssh_access)
+
+    def test_appliance_proxy_configuration_has_right_type(self):
+        self.assertIsInstance(self._oneview.appliance_proxy_configuration, ApplianceProxyConfiguration)
+
+    def test_appliance_proxy_configuration_client(self):
+        ApplianceProxyConfiguration = self._oneview.appliance_proxy_configuration
+        self.assertNotEqual(ApplianceProxyConfiguration, self._oneview.appliance_proxy_configuration)

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 ###
-# (C) Copyright [2020] Hewlett Packard Enterprise Development LP
+# (C) Copyright [2021] Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,10 +21,10 @@ from hpeOneView.exceptions import HPEOneViewException
 from config_loader import try_load_from_file
 
 config = {
-    "ip": "<oneview_ip>",
+    "ip": "",
     "credentials": {
-        "userName": "<username>",
-        "password": "<password>"
+        "userName": "",
+        "password": ""
     }
 }
 
@@ -53,13 +53,19 @@ print("Get a tree of tasks")
 tasks_filtered = tasks.get_all(filter="\"taskState='Completed'\"", view="tree", count=10)
 pprint(tasks_filtered)
 
+# Get an aggregate tree of tasks with specified filter
+print("Get a aggregate tree")
+tasks_filtered = tasks.get_all(filter="\"taskState='Completed'\"", view="aggregatedTree", childLimit=2, topCount=2)
+pprint(tasks_filtered)
+
+# Get a flat tree of tasks with specified filter
+print("Get a flat tree")
+tasks_filtered = tasks.get_all(view="flat-tree", start=0, count=1, filter="status=Warning OR status=OK")
+pprint(tasks_filtered)
+
 # Performs a patch operation
-component = tasks_limited[0]["uri"].split('/')[-1]
 if oneview_client.api_version >= 1200:
-    task = tasks.get_by_id(component)
-    if task.data.get('isCancellable') and task.data['isCancellable'] is False:
-        try:
-            updated_tasks = tasks.patch('Replace', "isCancellable", True)
-            pprint(updated_tasks.data)
-        except HPEOneViewException as e:
-            print(e.msg)
+    tasks_filtered = tasks.get_all(filter=["\"taskState='Running'\"", "\"isCancellable='true'\""])
+    task_uri = tasks_filtered[0]['uri']
+    response = tasks.patch(task_uri)
+    print(response)
